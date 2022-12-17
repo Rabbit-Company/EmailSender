@@ -1,0 +1,12 @@
+{
+  "name": "email-sender",
+  "version": "1.0.0",
+  "devDependencies": {
+    "wrangler": "2.6.2"
+  },
+  "private": true,
+  "scripts": {
+    "start": "wrangler dev",
+    "deploy": "wrangler publish"
+  }
+}

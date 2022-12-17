@@ -1,0 +1,19 @@
+name = "email-sender"
+main = "src/index.js"
+
+compatibility_date = "2022-12-17"
+
+[vars]
+
+# Authentication
+USER = "admin"
+PASSWORD = "SuperSecurePasswordHere123!"
+
+# Email
+EMAIL = "no-replay@example.com"
+NAME = "Example"
+
+# DKIM
+DKIM_DOMAIN = "example.com"
+DKIM_SELECTOR = "mcdkim"
+DKIM_PRIVATE_KEY = "<base64 encoded private key>"
