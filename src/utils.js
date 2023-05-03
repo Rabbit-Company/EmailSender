@@ -41,7 +41,7 @@ export default class Utils{
 	}
 
 	static async setValue(key, value, expirationTime = null, cacheTime = 60){
-		let cacheKey = "https://api.rabbitserverlist.com?key=" + key;
+		let cacheKey = "https://api.rabbitemail.org?key=" + key;
 		if(expirationTime === null){
 			await this.env.KV.put(key, value);
 		}else{
@@ -55,7 +55,7 @@ export default class Utils{
 	static async getValue(key, cacheTime = 60){
 		let value = null;
 
-		let cacheKey = "https://api.rabbitserverlist.com?key=" + key;
+		let cacheKey = "https://api.rabbitemail.org?key=" + key;
 		let res = await this.cache.match(cacheKey);
 		if(res) value = await res.text();
 
@@ -71,6 +71,6 @@ export default class Utils{
 
 	static async deleteValue(key){
 		await this.env.KV.delete(key);
-		await this.cache.delete("https://api.rabbitserverlist.com?key=" + key);
+		await this.cache.delete("https://api.rabbitemail.org?key=" + key);
 	}
 }
