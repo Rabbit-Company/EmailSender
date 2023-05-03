@@ -48,4 +48,48 @@ export default class Account{
 		return message;
 	}
 
+	static async data(username, token){
+		if(!Validate.username(username)) return Errors.getJson(1001);
+		if(!Validate.token(token)) return Errors.getJson(1004);
+
+		if(!(await Utils.authenticate(username, token))) return Errors.getJson(1008);
+
+		let message = Errors.getJson(0);
+		try{
+			let { results } = await Utils.env.DB.prepare("SELECT email, max_domains, max_emails, max_sent, created, accessed FROM accounts WHERE username = ?").bind(username).all();
+			if(results.length !== 1) return Errors.getJson(1007);
+
+			let userData = results[0];
+			message.data = {};
+			message.data['email'] = userData.email;
+			message.data['max_domains'] = userData.max_domains;
+			message.data['max_emails'] = userData.max_emails;
+			message.data['max_sent'] = userData.max_sent;
+			message.data['accessed'] = userData.accessed;
+			message.data['created'] = userData.created;
+		}catch{
+			return Errors.getJson(1005);
+		}
+
+		return message;
+	}
+
+	static async delete(username, token){
+		if(!Validate.username(username)) return Errors.getJson(1001);
+		if(!Validate.token(token)) return Errors.getJson(1004);
+
+		if(!(await Utils.authenticate(username, token))) return Errors.getJson(1008);
+
+		try{
+			let token = 'token-' + username + '-' + Utils.hashedIP;
+
+			await Utils.env.DB.prepare("DELETE FROM accounts WHERE username = ?").bind(username).run();
+			await Utils.deleteValue(token);
+		}catch{
+			return Errors.getJson(1009);
+		}
+
+		return Errors.getJson(0);
+	}
+
 }

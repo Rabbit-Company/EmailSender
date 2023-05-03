@@ -37,6 +37,22 @@ router.post('/v1/account', async request => {
 
 	let message = await Account.create(auth.user, data['email'], auth.pass, data['turnstile']);
 	return Utils.jsonResponse(message);
+}).get(async request => {
+	await Utils.initialize(request.env, request.req.headers.get('CF-Connecting-IP'));
+
+	const auth = Utils.basicAuthentication(request.req.headers.get('Authorization'));
+	if(auth === null) return Utils.jsonResponse(Errors.getJson(1006));
+
+	let message = await Account.data(auth.user, auth.pass);
+	return Utils.jsonResponse(message);
+}).delete(async request => {
+	await Utils.initialize(request.env, request.req.headers.get('CF-Connecting-IP'));
+
+	const auth = Utils.basicAuthentication(request.req.headers.get('Authorization'));
+	if(auth === null) return Utils.jsonResponse(Errors.getJson(1006));
+
+	let message = await Account.delete(auth.user, auth.pass);
+	return Utils.jsonResponse(message);
 });
 
 router.get('/v1/account/token', async request => {
