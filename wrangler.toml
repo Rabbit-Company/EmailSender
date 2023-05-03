@@ -1,19 +1,15 @@
-name = "email-sender"
+name = "rabbit-email-sender"
 main = "src/index.js"
+compatibility_date = "2023-05-03"
 
-compatibility_date = "2022-12-17"
+kv_namespaces = [
+	{ binding = "KV", id = "cabba72e6c8e46febfdb92efc1a51895" }
+]
 
-[vars]
+d1_databases = [
+	{ binding = "DB", database_name = "rabbit-email-sender", database_id = "9ea1645e-fb30-4d80-8a0d-3c3320aa8eec" }
+]
 
-# Authentication
-USER = "admin"
-PASSWORD = "SuperSecurePasswordHere123!"
+vars = { ACCOUNT_ID = "eb996327383b1ba7869926dcb856b4ae" }
 
-# Email
-EMAIL = "no-replay@example.com"
-NAME = "Example"
-
-# DKIM
-DKIM_DOMAIN = "example.com"
-DKIM_SELECTOR = "mcdkim"
-DKIM_PRIVATE_KEY = "<base64 encoded private key>"
+# Don't forget to set the token for Cloudflare Turnstile with: wrangler secret put CF_TURNSTILE_TOKEN
