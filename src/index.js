@@ -39,6 +39,16 @@ router.post('/v1/account', async request => {
 	return Utils.jsonResponse(message);
 });
 
+router.get('/v1/account/token', async request => {
+	await Utils.initialize(request.env, request.req.headers.get('CF-Connecting-IP'));
+
+	const auth = Utils.basicAuthentication(request.req.headers.get('Authorization'));
+	if(auth === null) return Utils.jsonResponse(Errors.getJson(1006));
+
+	let message = await Account.token(auth.user, auth.pass);
+	return Utils.jsonResponse(message);
+});
+
 router.all("*", () => {
 	return Utils.jsonResponse({ "error": 404, "info": "Invalid API endpoint" }, 404);
 });

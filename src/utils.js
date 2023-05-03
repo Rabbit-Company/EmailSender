@@ -27,6 +27,51 @@ export default class Utils{
 		return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
 	}
 
+	static getRandomInt(max, min = 0){
+		var range = max - min;
+		var requestBytes = Math.ceil(Math.log2(range) / 8);
+		if(!requestBytes) return min;
+
+		var maxNum = Math.pow(256, requestBytes);
+		var ar = new Uint8Array(requestBytes);
+
+		while (true){
+			crypto.getRandomValues(ar);
+			var val = 0;
+			for(var i = 0;i < requestBytes;i++) val = (val << 8) + ar[i];
+			if(val < maxNum - maxNum % range) return min + (val % range);
+		}
+	}
+
+	static generateCodes(){
+		let codes = '';
+		for(let i = 0; i < 10; i++) codes += this.getRandomInt(999999, 100000) + ';';
+		codes = codes.slice(0, -1);
+		return codes;
+	}
+
+	static async getToken(username){
+		let key = 'token-' + username + '-' + this.hashedIP;
+		return (await this.getValue(key));
+	}
+
+	static async generateToken(username){
+		let token = null;
+		let key = 'token-' + username + '-' + this.hashedIP;
+
+		token = await this.getValue(key);
+		if(token == null){
+			token = await this.generateHash(this.generateCodes());
+			await this.setValue(key, token, 86400);
+		}
+
+		return token;
+	}
+
+	static async authenticate(username, token){
+		return (token === await this.getToken(username));
+	}
+
 	static basicAuthentication(authorization) {
 		if(authorization === null) return null;
 		const [scheme, encoded] = authorization.split(' ');
